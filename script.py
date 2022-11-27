@@ -1,9 +1,10 @@
 import pandas as pd
+import sys
 from colorama import Fore, init
 init(autoreset=True)
 
 print(Fore.GREEN + "Client List script successfully launched.")
-print('Running: Pandas', pd.__version__)
+print('Running: Pandas', pd.__version__, 'Preferred (1.5.2) | ', 'Python', sys.version)
 print("-----------------------------------------------")
 
 input_sheet = pd.read_excel('input/read/List1.xlsx')
@@ -27,6 +28,7 @@ updated_partners = ["Empty"] * len(ipartner_series.array)
 confirmed_cnames = ["Empty"] * len(iname_series.array)
 confirmed_cnumbers = ["Empty"] * len(inumber_series.array)
 
+# TODO: add save functionality
 
 def confirmation(mismatch_type: str, case_num: int, input_series: pd.Series, output_series: pd.Series):
 
@@ -49,7 +51,7 @@ def confirmation(mismatch_type: str, case_num: int, input_series: pd.Series, out
         print(Fore.RED + "---------- CLIENT NUMBER MISMATCH (CASE " + str(case_num + 1) + ") ----------")
         print("Confirm that the client number is still correct; if confirmed, the input client number will be used.")
         print("Enter 'y' to confirm, or 'n' to change it.")
-        choice = input("Client number: " + input_series[case_num] + " | " + output_series[case_num] + " (y/n): ")
+        choice = input("Client number: " + str(input_series[case_num]) + " | " + str(output_series[case_num]) + " (y/n): ")
 
         if choice == "y":
             print("Confirmed.")
@@ -75,6 +77,7 @@ for i in range(len(ipartner_series.array)):
         updated_partners[i] = ipartner_series.array[i]
         confirmed_cnames[i] = oname_series.array[i]
         confirmed_cnumbers[i] = onumber_series.array[i]
+        print("CASE " + str(i + 1) + ": " + Fore.YELLOW + "Data matches: Successful transfer.")
 
     elif iname_series.array[i] != oname_series.array[i] and inumber_series.array[i] == onumber_series.array[i]:  # name mismatch - ask for confirmation
         confirmation("client_name", i, iname_series, oname_series)
@@ -100,7 +103,7 @@ for i in range(len(ipartner_series.array)):
     #                               oname_series.where(oname_series == oname_series.array[i]),
     #                               ipartner_series.where(ipartner_series == ipartner_series.array[i])], axis=1, ignore_index=True)
 
-print("Data transfer complete.")
+print(Fore.GREEN + "Data transfer complete: All checks successful.")
 print(updated_partners)
 
 new_sheet = pd.DataFrame(
